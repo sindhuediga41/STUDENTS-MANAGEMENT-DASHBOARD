@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Management</title>
+<style>
+body{
+  font-family: Arial;
+  background:#ffffff;           
+  color:#000;
+  padding:1px;
+}
+input{
+  padding:8px;
+  margin:5px;
+  border:1px solid #8bb3ea;
+  border-radius:4px;
+  background:#f5f1f4;
+}
+.add-btn{
+  padding:6px 12px;
+  background:#0e7a35;
+  color:rgb(240, 230, 230);
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+}
+.add-btn:hover{
+  background:#198741;
+}
+.del-btn{
+  padding:6px 12px;
+  background:#db6161;
+  color:white;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+}
+.del-btn:hover{
+  background:#dc2626;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+  background:white;
+}
+th{
+  background:#2646ae;           
+  color:white;
+}
+th, td{
+  border:1px solid #1e40af;
+  padding:8px;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+<h2>Student Management</h2>
+<input id="name" placeholder="Name">
+<input id="age" type="number" min="1" placeholder="Age">
+<input id="course" placeholder="Course">
+<button class="add-btn" onclick="addStudent()">Add</button>
+<table>
+<tr>
+<th>Name</th>
+<th>Age</th>
+<th>Course</th>
+<th>Action</th>
+</tr>
+<tbody id="data"></tbody>
+</table>
+<script>
+const nameInput = document.getElementById("name");
+const ageInput = document.getElementById("age");
+const courseInput = document.getElementById("course");
+let students = JSON.parse(localStorage.getItem("students")) || [];
+function show(){
+  let rows = "";
+  students.forEach((s,i)=>{
+    rows += `
+    <tr>
+      <td>${s.name}</td>
+      <td>${s.age}</td>
+      <td>${s.course}</td>
+      <td>
+        <button class="del-btn" onclick="removeStudent(${i})">
+          Delete
+        </button>
+      </td>
+    </tr>`;
+  });
+  document.getElementById("data").innerHTML = rows;
+}
+function addStudent(){
+  let name = nameInput.value.trim();
+  let age = ageInput.value.trim();
+  let course = courseInput.value.trim();
+  if(name === "" || age === "" || course === ""){
+    alert("Please fill all three fields!");
+    return;
+  }
+  if(!Number.isInteger(Number(age))){
+    alert("Age must be a valid integer!");
+    ageInput.value = "";
+    return;
+  }
+  students.push({name, age, course});
+  localStorage.setItem("students", JSON.stringify(students));
+  show();
+  nameInput.value = "";
+  ageInput.value = "";
+  courseInput.value = "";
+}
+function removeStudent(i){
+  students.splice(i,1);
+  localStorage.setItem("students", JSON.stringify(students));
+  show();
+}
+show();
+</script>
+</body>
+</html>
